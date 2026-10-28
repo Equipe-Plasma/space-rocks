@@ -1,0 +1,115 @@
+[gd_scene format=3 uid="uid://bjxqj08mykhut"]
+
+[ext_resource type="Script" uid="uid://dy7scicdpagtv" path="res://Player/player.gd" id="1_4ntmi"]
+[ext_resource type="Script" uid="uid://ie6ugypurgy2" path="res://Player/main.gd" id="1_gwnis"]
+[ext_resource type="Texture2D" uid="uid://de1ggvl3sbms0" path="res://assets/player_ship.png" id="2_btcbx"]
+[ext_resource type="PackedScene" uid="uid://dn5linjaawimb" path="res://enemy/enemy.tscn" id="2_vtle1"]
+[ext_resource type="Script" uid="uid://b0r7gupcmtve5" path="res://Player/gun_cooldown.gd" id="3_k53q1"]
+[ext_resource type="PackedScene" uid="uid://djabmbtpxqh5v" path="res://explosion.tscn" id="5_fhl08"]
+[ext_resource type="PackedScene" uid="uid://da4dg5dy4ro8v" path="res://Hud/hud.tscn" id="5_k53q1"]
+[ext_resource type="AudioStream" uid="uid://c2xm1bi2qius" path="res://assets/sounds/laser.ogg" id="7_00tjw"]
+[ext_resource type="AudioStream" uid="uid://cojha1utsav13" path="res://assets/sounds/engine.ogg" id="8_x3vf3"]
+[ext_resource type="AudioStream" uid="uid://bmyyfvou1jeit" path="res://assets/sounds/explosion.wav" id="10_5htga"]
+[ext_resource type="AudioStream" uid="uid://b2nqgjxt4m1r6" path="res://assets/sounds/levelup.ogg" id="11_p5o4e"]
+[ext_resource type="AudioStream" uid="uid://c3ro6aymcbf0x" path="res://assets/sounds/Funky-Gameplay_Looping.ogg" id="12_gu6f8"]
+[ext_resource type="Texture2D" uid="uid://diq7bt765lfxn" path="res://assets/space_background.png" id="13_p5o4e"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_g4v7s"]
+radius = 29.0
+
+[sub_resource type="Curve" id="Curve_57qmd"]
+_data = [Vector2(1, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve2D" id="Curve2D_btcbx"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -203, -183, 0, 0, 0, 0, 934, -163, 0, 0, 0, 0, 955, 269, 0, 0, 0, 0, -206, 280, 0, 0, 0, 0, -204, -178, 0, 0, 0, 0, -203, -183)
+}
+point_count = 6
+
+[node name="Cena1" type="Node2D" unique_id=302654814]
+process_mode = 3
+position = Vector2(205, -29)
+script = ExtResource("1_gwnis")
+enemy_scene = ExtResource("2_vtle1")
+
+[node name="Player" type="RigidBody2D" parent="." unique_id=435357757]
+contact_monitor = true
+max_contacts_reported = 1
+script = ExtResource("1_4ntmi")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player" unique_id=1394141579]
+position = Vector2(3, -2)
+rotation = 1.5707964
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_btcbx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1914589210]
+shape = SubResource("CircleShape2D_g4v7s")
+
+[node name="Muzzle" type="Marker2D" parent="Player" unique_id=347999293]
+position = Vector2(67, 4)
+
+[node name="GunCooldown" type="Timer" parent="Player" unique_id=1453980252]
+wait_time = 0.25
+one_shot = true
+autostart = true
+script = ExtResource("3_k53q1")
+
+[node name="Explosion" parent="Player" unique_id=789641906 instance=ExtResource("5_fhl08")]
+
+[node name="InvulnerabilityTimer" type="Timer" parent="Player" unique_id=1943274522]
+wait_time = 2.0
+one_shot = true
+
+[node name="LaserSound" type="AudioStreamPlayer" parent="Player" unique_id=243626793]
+stream = ExtResource("7_00tjw")
+
+[node name="EngineSound" type="AudioStreamPlayer" parent="Player" unique_id=932154704]
+stream = ExtResource("8_x3vf3")
+
+[node name="Exhaust" type="CPUParticles2D" parent="Player" unique_id=468461200]
+show_behind_parent = true
+position = Vector2(-28, 0)
+rotation = 3.1415927
+amount = 25
+lifetime = 0.09999999999999999
+local_coords = true
+emission_shape = 3
+emission_rect_extents = Vector2(1, 5)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_max = 400.0
+scale_amount_max = 8.0
+scale_amount_curve = SubResource("Curve_57qmd")
+
+[node name="RockPath" type="Path2D" parent="." unique_id=3416989]
+curve = SubResource("Curve2D_btcbx")
+
+[node name="RockSpawn" type="PathFollow2D" parent="RockPath" unique_id=695420500]
+position = Vector2(-203, -183)
+rotation = 0.017588336
+
+[node name="HUD" parent="." unique_id=1967496436 instance=ExtResource("5_k53q1")]
+
+[node name="EnemyTimer" type="Timer" parent="." unique_id=1917421570]
+one_shot = true
+
+[node name="ExplosionSound" type="AudioStreamPlayer" parent="." unique_id=495047184]
+stream = ExtResource("10_5htga")
+
+[node name="LevelupSound" type="AudioStreamPlayer" parent="." unique_id=1478771844]
+stream = ExtResource("11_p5o4e")
+
+[node name="Music" type="AudioStreamPlayer" parent="." unique_id=1286557274]
+process_mode = 1
+stream = ExtResource("12_gu6f8")
+parameters/looping = true
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1687493769]
+position = Vector2(576, 324)
+texture = ExtResource("13_p5o4e")
+
+[connection signal="body_entered" from="Player" to="Player" method="_on_body_entered"]
+[connection signal="timeout" from="Player/InvulnerabilityTimer" to="Player" method="_on_invulnerability_timer_timeout"]
+[connection signal="timeout" from="EnemyTimer" to="." method="_on_enemy_timer_timeout"]
